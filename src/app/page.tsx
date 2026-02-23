@@ -1,62 +1,83 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
-type Memory = {
+type GameCard = {
   id: string;
-  date: string;
-  chat: string;
+  title: string;
+  heart: string;
 };
 
-type Hobby = {
-  title: string;
-  icon: string;
+type Cat = {
+  src: string;
+  position: { top?: string; bottom?: string; left?: string; right?: string };
+  width: number;
+  animationDuration: string;
+  animationDelay: string;
+  rotate: string;
 };
 
 export default function Home() {
-  const [memories, setMemories] = useState<Memory[]>([]);
+  const [games, setGames] = useState<GameCard[]>([]);
   const [error, setError] = useState<string | null>(null);
-
-  const hobbies: Hobby[] = [
-    { title: "Painting", icon: "/images/patterns/paint-brush.png" },
-    { title: "Crochet", icon: "/images/patterns/crochet.png" },
-    { title: "Baking", icon: "/images/patterns/cake.png" },
-    { title: "Red Onion", icon: "/images/patterns/red-onion.png" },
-    { title: "Cats", icon: "/images/cats/cat-icon.png" },
-  ];
+  const [cats, setCats] = useState<Cat[]>([]);
+  const [hearts, setHearts] = useState<
+    { id: string; heart: string; animationDuration: string; animationDelay: string }[]
+  >([]);
 
   useEffect(() => {
     try {
-      const fetchedMemories: Memory[] = [
-        {
-          id: "1",
-          date: "Jan 12, 2026",
-          chat: "Hi! I saw your Bumble profile… and I had to say hello ❤️",
-        },
-        {
-          id: "2",
-          date: "Jan 15, 2026",
-          chat: "I can’t believe we’ve been chatting nonstop for days 😄",
-        },
-        {
-          id: "3",
-          date: "Feb 1, 2026",
-          chat: "I love talking to you… you make my days brighter 🌞",
-        },
+      const gameCards: GameCard[] = [
+        { id: "1", title: "Game 1", heart: "/images/patterns/heart.png" },
+        { id: "2", title: "Game 2", heart: "/images/patterns/heart2.png" },
+        { id: "3", title: "Game 3", heart: "/images/patterns/heart3.png" },
+        { id: "4", title: "Game 4", heart: "/images/patterns/heart4.png" },
       ];
-      setMemories(fetchedMemories);
-    } catch (e) {
-      console.error(e);
-      setError("Failed to load your memories. Please refresh the page.");
+
+      if (!gameCards.length) throw new Error("Games failed to load");
+      setGames(gameCards);
+
+      setHearts(
+        gameCards.map((g) => ({
+          id: g.id,
+          heart: g.heart,
+          animationDuration: `${2 + Math.random() * 1.5}s`,
+          animationDelay: `${Math.random() * 2}s`,
+        }))
+      );
+
+      // Floating cats in random positions in background
+      const catSources = [
+        "/images/cats/cat1.png",
+        "/images/cats/cat2.png",
+        "/images/cats/cat1.png",
+        "/images/cats/cat2.png",
+      ];
+
+      const hydratedCats: Cat[] = catSources.map((src) => ({
+        src,
+        position: {
+          top: `${Math.random() * 70 + 10}%`, // avoid top header (10%-80%)
+          left: `${Math.random() * 80 + 10}%`, // 10%-90%
+        },
+        width: 40 + Math.floor(Math.random() * 30), // 40px-70px
+        animationDuration: `${2 + Math.random() * 2}s`,
+        animationDelay: `${Math.random() * 2}s`,
+        rotate: `${Math.random() * 20 - 10}deg`,
+      }));
+
+      setCats(hydratedCats);
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong loading the games or cats.");
     }
   }, []);
 
   if (error) {
     return (
       <div className="max-w-2xl mx-auto text-center mt-20">
-        <h1 className="text-2xl font-semibold text-red-500 mb-4">
-          {error}
-        </h1>
+        <h1 className="text-2xl font-semibold text-red-500">{error}</h1>
       </div>
     );
   }
@@ -66,68 +87,70 @@ export default function Home() {
       {/* Hero */}
       <section className="text-center mb-16">
         <h1 className="text-5xl font-handwriting text-[#F77F7F] mb-4">
-          Our Chat Scrapbook ❤️
+          Hello, Bro!
         </h1>
-        <p className="text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-          A little digital scrapbook of our conversations and memories from
-          Bumble. Every chat is a story.
+        <p className="text-neutral-600 max-w-2xl mx-auto">
+          Tap a heart to unlock a little surprise.
         </p>
       </section>
 
-      {/* Abstract / Watercolor background */}
-      <img
-        src="/images/patterns/watercolor1.png"
-        className="absolute top-10 left-0 w-64 opacity-20 -z-10"
-      />
-      <img
-        src="/images/patterns/watercolor2.png"
-        className="absolute bottom-20 right-0 w-72 opacity-25 -z-10"
-      />
-
-      {/* Chat Memory Cards */}
+      {/* Game Hearts */}
       <section className="grid md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
-        {memories.map((memory, i) => (
-          <div
-            key={memory.id}
-            className="relative bg-white rounded-2xl p-6 shadow-lg border transition transform"
-          >
-            <div
-              className={`p-4 rounded-xl ${
-                i % 2 === 0 ? "bg-[#F77F7F] text-white" : "bg-gray-100 text-gray-800"
-              }`}
-            >
-              <p className="text-base md:text-lg leading-relaxed">{memory.chat}</p>
-            </div>
-            <p className="text-gray-500 mt-3 text-sm text-right">{memory.date}</p>
-          </div>
-        ))}
+        {games.map((game, i) => {
+          const heartStyle = hearts.find((h) => h.id === game.id);
+          return (
+            <Link key={game.id} href="/game">
+              <div className="relative bg-white rounded-2xl p-10 shadow-lg border hover:shadow-xl transition cursor-pointer">
+                <div
+                  className={`rounded-xl p-10 flex items-center justify-center ${
+                    (Math.floor(i / 2) + i % 2) % 2 === 0
+                      ? "bg-[#F9A8A8]"
+                      : "bg-[#F1F5F9]"
+                  }`}
+                >
+                  {heartStyle && (
+                    <img
+                      src={heartStyle.heart}
+                      className="w-20 heart-dance transition-transform duration-300 hover:scale-125"
+                      alt="game heart"
+                      style={{
+                        animationDuration: heartStyle.animationDuration,
+                        animationDelay: heartStyle.animationDelay,
+                      }}
+                    />
+                  )}
+                </div>
+                <p className="text-gray-500 mt-4 text-center text-sm">
+                  Tap to play
+                </p>
+              </div>
+            </Link>
+          );
+        })}
       </section>
 
-      {/* Floating Cats */}
-      <img
-        src="/images/cats/cat1.png"
-        className="absolute top-12 left-8 w-16 animate-bounce"
-        alt="cat sticker"
-      />
-      <img
-        src="/images/cats/cat2.png"
-        className="absolute bottom-24 right-12 w-20 animate-pulse"
-        alt="cat sticker"
-      />
-
-      {/* Hobby Icons */}
-      <section className="flex gap-8 mt-20 justify-center flex-wrap">
-        {hobbies.map((hobby) => (
-          <div key={hobby.title} className="flex flex-col items-center mb-4">
-            <img
-              src={hobby.icon}
-              className="w-16 h-16 mb-2"
-              alt={hobby.title}
-            />
-            <p className="text-gray-700 text-sm md:text-base">{hobby.title}</p>
-          </div>
-        ))}
-      </section>
+      {/* Floating background cats */}
+      {cats.map((cat, i) => (
+        <div
+          key={i}
+          className="absolute pointer-events-none -z-10"
+          style={{
+            top: cat.position.top,
+            left: cat.position.left,
+          }}
+        >
+          <img
+            src={cat.src}
+            className="floating-cat blur-sm opacity-50"
+            alt="cat"
+            style={{
+              width: `${cat.width * 1.4}px`,
+              animationDuration: cat.animationDuration,
+              animationDelay: cat.animationDelay,
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 }
