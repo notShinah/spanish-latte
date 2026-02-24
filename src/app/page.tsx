@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { collection, query, orderBy, getDocs } from "firebase/firestore";
+import { firestore } from "@/lib/firebase";
 
 type GameCard = {
   id: string;
@@ -29,10 +31,10 @@ export default function Home() {
   useEffect(() => {
     try {
       const gameCards: GameCard[] = [
-        { id: "1", title: "Game 1", heart: "/images/patterns/heart.png" },
-        { id: "2", title: "Game 2", heart: "/images/patterns/heart2.png" },
-        { id: "3", title: "Game 3", heart: "/images/patterns/heart3.png" },
-        { id: "4", title: "Game 4", heart: "/images/patterns/heart4.png" },
+        { id: "1", title: "Find the Cats", heart: "/images/patterns/heart.png" },
+        { id: "2", title: "Paint Together", heart: "/images/patterns/heart2.png" },
+        { id: "3", title: "Catch My Heart", heart: "/images/patterns/heart3.png" },
+        { id: "4", title: "Secret Surprise", heart: "/images/patterns/heart4.png" },
       ];
 
       if (!gameCards.length) throw new Error("Games failed to load");
@@ -99,7 +101,7 @@ export default function Home() {
         {games.map((game, i) => {
           const heartStyle = hearts.find((h) => h.id === game.id);
           return (
-            <Link key={game.id} href="/game">
+            <Link key={game.id} href={`/game/${game.id}`}>
               <div className="relative bg-white rounded-2xl p-10 shadow-lg border hover:shadow-xl transition cursor-pointer">
                 <div
                   className={`rounded-xl p-10 flex items-center justify-center ${
@@ -150,6 +152,28 @@ export default function Home() {
             }}
           />
         </div>
+      ))}
+    </div>
+  );
+}
+
+function Gallery() {
+  const [images, setImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      const q = query(collection(firestore, "gallery"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+      const urls = snapshot.docs.map(doc => doc.data().url as string);
+      setImages(urls);
+    };
+    fetchImages();
+  }, []);
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      {images.map((url, i) => (
+        <img key={i} src={url} className="rounded shadow-lg w-full object-cover" />
       ))}
     </div>
   );
