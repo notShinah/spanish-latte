@@ -561,16 +561,265 @@ function CatchGame() {
   );
 }
 
-/* ---------------- SECRET ---------------- */
-
+/* ---------------- PHOTOBOOTH ---------------- */
+/* ---------------- PHOTOBOOTH ---------------- */
 function SecretGame() {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [cameraOn, setCameraOn] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
+  const [takingPhotos, setTakingPhotos] = useState(false);
+  const [stripTitle, setStripTitle] = useState("Choose a header");
+  const [animatePhoto, setAnimatePhoto] = useState<string | null>(null);
+
+  // Start camera
+  const startCamera = async () => {
+    if (cameraOn) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) videoRef.current.srcObject = stream;
+      setCameraOn(true);
+    } catch (err) {
+      alert("Cannot access camera. Please check permissions.");
+    }
+  };
+
+  // Take a photo with countdown
+  const takePhotobooth = async () => {
+    if (!videoRef.current || !canvasRef.current) return;
+    setTakingPhotos(true);
+
+    for (let c = 3; c > 0; c--) {
+      setCountdown(c);
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+    setCountdown(null);
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    canvas.width = 400;
+    canvas.height = 300;
+    ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+    const photo = canvas.toDataURL("image/png");
+
+    // Animate photo flying into gallery
+    setAnimatePhoto(photo);
+    await new Promise((r) => setTimeout(r, 500));
+
+    setCapturedPhotos((prev) => {
+      if (prev.length < 4) return [...prev, photo];
+      const newPhotos = [...prev];
+      newPhotos[prev.length - 1] = photo;
+      return newPhotos;
+    });
+
+    setAnimatePhoto(null);
+    setTakingPhotos(false);
+  };
+
+  const deletePhoto = (index: number) => setCapturedPhotos(prev => prev.filter((_, i) => i !== index));
+  const retake = () => setCapturedPhotos([]);
+
+const downloadStrip = async () => {
+  if (capturedPhotos.length === 0) return;
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const stripWidth = 260;
+  const maxPhotoHeight = 300;
+  const gap = 10; // smaller, fixed gap between photos
+  const padding = 20;
+
+  // Load all images first
+  const loadedImages: HTMLImageElement[] = await Promise.all(
+    capturedPhotos.map(
+      (p) =>
+        new Promise<HTMLImageElement>((resolve) => {
+          const img = new Image();
+          img.src = p;
+          img.onload = () => resolve(img);
+        })
+    )
+  );
+
+  // Calculate total height dynamically
+  const photoHeights = loadedImages.map((img) => {
+    const ratio = Math.min(stripWidth / img.width, maxPhotoHeight / img.height);
+    return img.height * ratio;
+  });
+  const totalHeight = photoHeights.reduce((a, b) => a + b, 0) + gap * (loadedImages.length - 1) + 140;
+
+  canvas.width = stripWidth + padding * 2;
+  canvas.height = totalHeight;
+
+  // Background
+  ctx.fillStyle = "#FFE4EC";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Decorative dots
+  ctx.fillStyle = "#F77F7F";
+  for (let y = 20; y < canvas.height; y += 40) {
+    ctx.beginPath();
+    ctx.arc(10, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(canvas.width - 10, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Draw photos
+  let currentY = padding;
+  loadedImages.forEach((img, i) => {
+    const ratio = Math.min(stripWidth / img.width, maxPhotoHeight / img.height);
+    const drawWidth = img.width * ratio;
+    const drawHeight = img.height * ratio;
+    const offsetX = padding + (stripWidth - drawWidth) / 2;
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(offsetX - 5, currentY - 5, drawWidth + 10, drawHeight + 10);
+
+    ctx.drawImage(img, offsetX, currentY, drawWidth, drawHeight);
+
+    currentY += drawHeight + gap; // move to next photo position
+  });
+
+  // Draw title & date
+  ctx.fillStyle = "#F77F7F";
+  ctx.font = "22px Inter";
+  ctx.textAlign = "center";
+  ctx.fillText(stripTitle || "Photobooth", canvas.width / 2, canvas.height - 60);
+
+  ctx.fillStyle = "#888";
+  ctx.font = "14px Inter";
+  ctx.fillText(new Date().toLocaleDateString(), canvas.width / 2, canvas.height - 35);
+
+  // Download
+  const link = document.createElement("a");
+  link.download = "photobooth-strip.png";
+  link.href = canvas.toDataURL();
+  link.click();
+};
+
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-[#FFF9F4]">
+    <div className="relative min-h-screen flex flex-col items-center bg-[#FFF9F4] pt-10 px-4 md:px-10">
       <BackButton />
-      <h1 className="text-4xl font-handwriting text-[#F77F7F]">Secret Surprise 💌</h1>
-      <p className="text-gray-500 mt-4">
-        I'm still preparing something special here.
-      </p>
+
+      <h1 className="text-3xl md:text-4xl font-handwriting text-[#F77F7F] mb-4 text-center">
+        Photobooth 📸
+      </h1>
+
+      <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto gap-8 p-4">
+        {/* Camera Section */}
+        <div className="relative w-full md:w-1/2 bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col items-center justify-center p-4">
+          {!cameraOn && (
+            <button
+              onClick={startCamera}
+              className="px-6 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg shadow-lg transition hover:scale-105"
+            >
+              Start Camera
+            </button>
+          )}
+
+          <video
+            ref={videoRef}
+            autoPlay
+            className={`w-full rounded-xl shadow-lg aspect-video object-cover border border-gray-200 dark:border-gray-700 ${
+              cameraOn ? "block" : "hidden"
+            }`}
+          />
+
+          {countdown && (
+            <div className="absolute inset-0 flex items-center justify-center text-6xl md:text-7xl font-bold text-white bg-black/40 rounded-xl animate-pulse">
+              {countdown}
+            </div>
+          )}
+
+          {animatePhoto && (
+            <img
+              src={animatePhoto}
+              className="animate-fly absolute w-20 md:w-28 rounded-lg shadow-lg top-2 left-2 border border-white"
+            />
+          )}
+
+          {cameraOn && (
+            <div className="mt-4 w-full flex flex-col items-center gap-3">
+              <div className="flex gap-3 flex-wrap justify-center">
+                <button
+                  onClick={takePhotobooth}
+                  disabled={takingPhotos}
+                  className={`px-5 py-2 rounded-lg text-white font-medium shadow-md transition hover:scale-105 ${
+                    takingPhotos ? "bg-gray-400 cursor-not-allowed" : "bg-pink-500 hover:bg-pink-600"
+                  }`}
+                >
+                  Take Photo
+                </button>
+
+                <button
+                  onClick={retake}
+                  className="px-5 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white font-medium shadow-md transition hover:scale-105"
+                >
+                  Retake
+                </button>
+
+                <button
+                  onClick={downloadStrip}
+                  className="px-5 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white font-medium shadow-md transition hover:scale-105"
+                >
+                  Download Strip
+                </button>
+              </div>
+
+              <input
+                value={stripTitle}
+                onChange={(e) => setStripTitle(e.target.value)}
+                placeholder="Enter photobooth title..."
+                className="mt-3 w-72 md:w-96 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-center focus:outline-none focus:ring-2 focus:ring-pink-400 dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Photo Grid Section */}
+        {cameraOn && (
+          <div className="w-full md:w-1/2 flex flex-col gap-4">
+            <h2 className="text-lg md:text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">
+              Photo Gallery
+            </h2>
+
+            {capturedPhotos.length === 0 ? (
+              <div className="flex items-center justify-center h-60 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 text-center p-4">
+                No photos taken yet. Take your first photo!
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+                {capturedPhotos.map((p, i) => (
+                  <div key={i} className="relative group">
+                    <img
+                      src={p}
+                      className="w-full h-52 md:h-60 object-cover rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm"
+                    />
+                    <button
+                      onClick={() => deletePhoto(i)}
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm shadow-md"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 }

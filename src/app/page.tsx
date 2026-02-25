@@ -34,7 +34,7 @@ export default function Home() {
         { id: "1", title: "Find the Cats", heart: "/images/patterns/heart.png" },
         { id: "2", title: "Paint Together", heart: "/images/patterns/heart2.png" },
         { id: "3", title: "Catch My Heart", heart: "/images/patterns/heart3.png" },
-        { id: "4", title: "Secret Surprise", heart: "/images/patterns/heart4.png" },
+        { id: "4", title: "Photobooth", heart: "/images/patterns/heart4.png" },
       ];
 
       if (!gameCards.length) throw new Error("Games failed to load");
@@ -97,17 +97,15 @@ export default function Home() {
       </section>
 
       {/* Game Hearts */}
-      <section className="grid md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
+      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 lg:gap-12 pb-2">
         {games.map((game, i) => {
           const heartStyle = hearts.find((h) => h.id === game.id);
           return (
             <Link key={game.id} href={`/game/${game.id}`}>
-              <div className="relative bg-white rounded-2xl p-10 shadow-lg border hover:shadow-xl transition cursor-pointer">
+              <div className="relative bg-white rounded-2xl p-6 md:p-10 shadow-lg border hover:shadow-xl transition cursor-pointer w-full">
                 <div
                   className={`rounded-xl p-10 flex items-center justify-center ${
-                    (Math.floor(i / 2) + i % 2) % 2 === 0
-                      ? "bg-[#F9A8A8]"
-                      : "bg-[#F1F5F9]"
+                    i % 2 === 0 ? "bg-[#F9A8A8]" : "bg-[#F1F5F9]"
                   }`}
                 >
                   {heartStyle && (
@@ -129,6 +127,14 @@ export default function Home() {
             </Link>
           );
         })}
+      </section>
+
+      {/* Gallery */}
+      <section className="mt-16">
+        <h2 className="text-2xl font-handwriting text-[#F77F7F] text-center mb-4">
+          Gallery 💖
+        </h2>
+        <Gallery />
       </section>
 
       {/* Floating background cats */}
