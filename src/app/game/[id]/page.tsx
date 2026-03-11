@@ -123,40 +123,8 @@ function CatsGame() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-50 p-4 relative overflow-hidden">
-      {/* 3D Floating Elements */}
-      <div className='absolute inset-0 pointer-events-none'>
-        <motion.div
-          animate={{
-            x: [0, 100, 200, 100, 0],
-            y: [0, -50, -100, -50, 0],
-            rotate: [0, 45, 90, 45, 0],
-            scale: [0.8, 1.2, 1.6, 1.2, 0.8]
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className='absolute top-1/4 left-1/4 w-4 h-4 bg-gradient-to-r from-pink-300 to-rose-300 rounded-full opacity-20 blur-sm'
-        />
-
-        <motion.div
-          animate={{
-            x: [200, 150, 100, 150, 200],
-            y: [100, 50, 100, 150, 100],
-            rotate: [0, -45, -90, -45, 0],
-            scale: [1, 1.3, 1, 0.7, 1]
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 3
-          }}
-          className='absolute top-1/3 right-1/4 w-3 h-3 bg-gradient-to-r from-rose-300 to-red-300 rounded-full opacity-25 blur-sm'
-        />
-      </div>
+    <div className="min-h-screen bg-background p-4 relative">
+      {/* background decorative shapes removed for minimal design */}
 
       <BackButton />
 
@@ -168,17 +136,15 @@ function CatsGame() {
           className="text-center mb-8"
         >
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg shadow-pink-200/50">
+            <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
               <Target className="h-6 w-6 text-white" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent">
-              Find the Cats
-            </h1>
-            <div className="w-12 h-12 bg-gradient-to-r from-rose-500 to-red-500 rounded-full flex items-center justify-center shadow-lg shadow-rose-200/50">
+            <h1 className="text-4xl font-bold text-foreground">Find the Cats</h1>
+            <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
               <Heart className="h-6 w-6 text-white" />
             </div>
           </div>
-          <p className="text-pink-700 font-medium">Click on all the cats to complete the level! 🐱💕</p>
+          <p className="text-muted-foreground font-medium">Click on all the cats to complete the level.</p>
         </motion.div>
 
         {/* Stats */}
@@ -196,11 +162,10 @@ function CatsGame() {
             <Star className="mr-2 h-4 w-4" />
             Score: {score}
           </Badge>
-          <Badge variant="outline" className="px-4 py-2 border-pink-300 text-pink-700 bg-pink-50/50 shadow-lg">
-            <Trophy className="mr-2 h-4 w-4" />
+          <Badge className="px-4 py-2 bg-card text-foreground border border-border">
             Best: {highScore}
           </Badge>
-          <Badge className="px-4 py-2 bg-gradient-to-r from-pink-200 to-rose-200 text-pink-900 border border-pink-300 shadow-lg">
+          <Badge className="px-4 py-2 bg-card text-foreground border border-border">
             Found: {found}/{cats.length}
           </Badge>
         </motion.div>
@@ -210,7 +175,7 @@ function CatsGame() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="relative mx-auto rounded-xl w-full max-w-2xl h-[60vh] border-2 border-dashed border-pink-300 overflow-hidden bg-gradient-to-br from-pink-50 to-rose-50 shadow-3d"
+          className="relative mx-auto rounded-xl w-full max-w-2xl h-[60vh] border-2 border-dashed border-border overflow-hidden bg-card"
         >
           <img
             src={backgrounds[level - 1] || backgrounds[backgrounds.length - 1]}
@@ -581,8 +546,8 @@ function PaintGame() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-50 p-4 relative overflow-hidden">
-      {/* 3D Floating Elements */}
+    <div className="min-h-screen bg-background p-4 relative overflow-hidden">
+      {/* minimal background */}
       <div className='absolute inset-0 pointer-events-none'>
         <motion.div
           animate={{

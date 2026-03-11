@@ -100,19 +100,19 @@ export default function Home() {
 
   if (error) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center px-4 bg-gradient-to-br from-pink-50 via-rose-50 to-pink-50">
-        <Card className="max-w-md w-full border-pink-200 shadow-xl shadow-pink-100/50">
+      <div className="min-h-[60vh] flex items-center justify-center px-4 bg-background">
+        <Card className="max-w-md w-full border-accent shadow-lg">
           <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Heart className="h-8 w-8 text-white" />
+            <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+              <Heart className="h-8 w-8 text-white animate-ping" />
             </div>
-            <h2 className="text-xl font-semibold mb-2 text-pink-800">Oops! 💔</h2>
-            <p className="text-pink-600 mb-4 font-medium">{error}</p>
+            <h2 className="text-xl font-semibold mb-2 text-foreground">Oops! 💔</h2>
+            <p className="text-muted-foreground mb-4 font-medium">{error}</p>
             <Button
               onClick={() => window.location.reload()}
-              className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg shadow-pink-200/50"
+              className="bg-accent hover:bg-accent/90 text-white shadow"
             >
-              Try Again ✨
+              Try Again
             </Button>
           </CardContent>
         </Card>
@@ -121,7 +121,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-50">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Hero Section */}
         <motion.section
@@ -131,19 +131,17 @@ export default function Home() {
           className="text-center mb-16"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
-              <Heart className="h-6 w-6 text-white" />
+            <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
+              <Heart className="h-6 w-6 text-white animate-ping" />
             </div>
-            <h1 className="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent">
-              Mini Moments
-            </h1>
-            <div className="w-12 h-12 bg-gradient-to-r from-rose-500 to-red-500 rounded-full flex items-center justify-center shadow-lg">
+            <h1 className="text-5xl sm:text-6xl font-bold">Mini Moments</h1>
+            <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
               <Sparkles className="h-6 w-6 text-white" />
             </div>
           </div>
-          <p className="text-lg text-pink-700 max-w-2xl mx-auto font-medium">
+          <p className="text-lg max-w-2xl mx-auto font-medium text-muted-foreground">
             Discover delightful games and create unforgettable memories.
-            Tap a heart to begin your romantic adventure! 💖
+            Tap a heart to begin your red‑accented adventure!
           </p>
         </motion.section>
 
@@ -151,11 +149,11 @@ export default function Home() {
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {[...Array(4)].map((_, i) => (
-              <Card key={i} className="animate-pulse border-pink-200 shadow-lg">
+              <Card key={i} className="animate-pulse border-accent/50 shadow">
                 <CardContent className="p-6">
-                  <div className="h-32 bg-pink-100 rounded-lg mb-4"></div>
-                  <div className="h-4 bg-pink-100 rounded mb-2"></div>
-                  <div className="h-3 bg-pink-100 rounded"></div>
+                  <div className="h-32 bg-muted rounded-lg mb-4"></div>
+                  <div className="h-4 bg-muted rounded mb-2"></div>
+                  <div className="h-3 bg-muted rounded"></div>
                 </CardContent>
               </Card>
             ))}
@@ -179,7 +177,7 @@ export default function Home() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Link href={`/game/${game.id}`}>
-                    <Card className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-pink-100/50 border-2 border-pink-200 hover:border-pink-400 bg-gradient-to-br from-white to-pink-50/30">
+                    <Card className="group cursor-pointer transition-all duration-300 border-2 border-accent bg-card hover:shadow-lg">
                       <CardContent className="p-6">
                         <div className="flex items-center justify-center mb-4">
                           <motion.div
@@ -190,23 +188,23 @@ export default function Home() {
                             <motion.img
                               src={game.heart}
                               alt={`${game.title} heart`}
-                              className="w-20 h-20 object-contain drop-shadow-lg"
+                              className="w-20 h-20 object-contain"
                             />
-                            <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
+                            <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center">
                               {gameIcons[i]}
-                              <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
+                              <div className="absolute inset-0 bg-white/20 rounded-full animate-ping"></div>
                             </div>
                           </motion.div>
                         </div>
-                        <h3 className="text-lg font-bold text-center mb-2 group-hover:text-pink-600 transition-colors text-pink-800">
+                        <h3 className="text-lg font-bold text-center mb-2 text-foreground group-hover:text-accent transition-colors">
                           {game.title}
                         </h3>
-                        <p className="text-sm text-pink-600 text-center font-medium">
+                        <p className="text-sm text-muted-foreground text-center font-medium">
                           {game.description}
                         </p>
                         <div className="mt-4 flex justify-center">
-                          <div className="px-3 py-1 bg-gradient-to-r from-pink-100 to-rose-100 rounded-full text-xs font-semibold text-pink-700 border border-pink-200">
-                            Play Now ✨
+                          <div className="px-3 py-1 bg-accent rounded-full text-xs font-semibold text-white">
+                            Play Now
                           </div>
                         </div>
                       </CardContent>
@@ -218,228 +216,10 @@ export default function Home() {
           </motion.section>
         )}
 
-        {/* Gallery Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mb-16"
-        >
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center">
-                <Star className="h-4 w-4 text-white" />
-              </div>
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                Memory Gallery
-              </h2>
-              <div className="w-8 h-8 bg-gradient-to-r from-rose-500 to-red-500 rounded-full flex items-center justify-center">
-                <Heart className="h-4 w-4 text-white" />
-              </div>
-            </div>
-            <p className="text-pink-700 font-medium">
-              Cherished moments captured in our romantic games 💕
-            </p>
-          </div>
-          <Gallery />
-        </motion.section>
       </div>
 
-      {/* Floating background cats */}
-      {cats.map((cat, i) => (
-        <motion.div
-          key={i}
-          className="fixed pointer-events-none -z-10 opacity-50"
-          style={{
-            top: cat.position.top,
-            left: cat.position.left,
-          }}
-          animate={{
-            y: [0, -20, 0],
-            rotate: [0, 12, -12, 0],
-            scale: [1, 1.2, 1],
-            x: [0, 10, -10, 0]
-          }}
-          transition={{
-            duration: parseFloat(cat.animationDuration),
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: parseFloat(cat.animationDelay),
-          }}
-        >
-          <div className="relative">
-            <img
-              src={cat.src}
-              alt="decorative cat"
-              className="w-24 h-24 object-contain drop-shadow-2xl filter brightness-110"
-            />
-            <motion.div
-              animate={{
-                scale: [1, 1.5, 1],
-                opacity: [0.3, 0.8, 0.3]
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                delay: i * 0.5
-              }}
-              className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full blur-sm"
-            />
-          </div>
-        </motion.div>
-      ))}
-
-      {/* 3D Floating Geometric Shapes */}
-      <div className='fixed inset-0 pointer-events-none overflow-hidden -z-10'>
-        <motion.div
-          animate={{
-            x: [0, 200, 400, 600, 800],
-            y: [100, 50, 150, 100, 200],
-            rotate: [0, 180, 360, 540, 720],
-            scale: [0.5, 1, 1.5, 1, 0.5]
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className='absolute w-6 h-6 bg-gradient-to-r from-pink-300 to-rose-300 rounded-full opacity-20 blur-md'
-          style={{ top: '20%', left: '10%' }}
-        />
-
-        <motion.div
-          animate={{
-            x: [800, 600, 400, 200, 0],
-            y: [300, 250, 350, 300, 400],
-            rotate: [720, 540, 360, 180, 0],
-            scale: [1.5, 1, 0.5, 1, 1.5]
-          }}
-          transition={{
-            duration: 35,
-            repeat: Infinity,
-            ease: "linear",
-            delay: 5
-          }}
-          className='absolute w-8 h-8 bg-gradient-to-r from-rose-300 to-red-300 rounded-lg opacity-15 blur-lg'
-          style={{ top: '60%', right: '15%' }}
-        />
-
-        <motion.div
-          animate={{
-            rotateX: [0, 180, 360],
-            rotateY: [0, 180, 360],
-            scale: [1, 1.3, 1]
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 10
-          }}
-          className='absolute w-4 h-4 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full opacity-30 blur-sm'
-          style={{ top: '40%', left: '70%' }}
-        />
-
-        <motion.div
-          animate={{
-            x: [0, 100, 200, 100, 0],
-            y: [0, -50, -100, -50, 0],
-            rotateZ: [0, 90, 180, 270, 360],
-            scale: [0.8, 1.2, 1.6, 1.2, 0.8]
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 15
-          }}
-          className='absolute w-5 h-5 bg-gradient-to-r from-rose-400 to-red-400 rounded-lg opacity-25 blur-md'
-          style={{ bottom: '30%', left: '20%' }}
-        />
-
-        <motion.div
-          animate={{
-            rotate: [0, 360],
-            scale: [1, 1.5, 2, 1.5, 1],
-            opacity: [0.1, 0.3, 0.5, 0.3, 0.1]
-          }}
-          transition={{
-            duration: 40,
-            repeat: Infinity,
-            ease: "linear",
-            delay: 20
-          }}
-          className='absolute w-12 h-12 bg-gradient-to-r from-pink-200 to-rose-200 rounded-full opacity-10 blur-xl'
-          style={{ top: '10%', right: '30%' }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function Gallery() {
-  const [images, setImages] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        setIsLoading(true);
-        const q = query(collection(firestore, "gallery"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        const urls = snapshot.docs.map(doc => doc.data().url as string);
-        setImages(urls);
-      } catch (error) {
-        console.error("Error fetching gallery:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchImages();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="aspect-square bg-gradient-to-br from-pink-100 to-rose-100 rounded-lg animate-pulse border border-pink-200"></div>
-        ))}
-      </div>
-    );
-  }
-
-  if (images.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-          <Heart className="h-8 w-8 text-white" />
-        </div>
-        <p className="text-pink-700 font-medium">No memories yet. Start playing to create some magical moments! ✨</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {images.slice(0, 8).map((url, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3, delay: i * 0.1 }}
-          className="aspect-square overflow-hidden rounded-lg border-2 border-pink-200 shadow-lg hover:shadow-pink-100/50 transition-all duration-300 group"
-        >
-          <img
-            src={url}
-            alt={`Gallery image ${i + 1}`}
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-pink-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div className="absolute top-2 right-2 w-6 h-6 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <Heart className="w-3 h-3 text-white" />
-          </div>
-        </motion.div>
-      ))}
+        {/* footer spacing */}
+      <div className="h-20"></div>
     </div>
   );
 }
